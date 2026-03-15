@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eye Exercise</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-viewport">
+    <!-- The Exercise Area (Background) -->
+    <div class="canvas-wrapper">
+      <div id="exercise-target"></div>
+      
+      <!-- Interaction Overlays -->
+      <div id="start-overlay" class="overlay">
+        <div class="glass-panel main-modal">
+          <h2>Ready to focus?</h2>
+          <p>Follow the moving dot for 60 seconds to relieve eye strain.</p>
+          <button id="start-btn" class="btn primary">Start Exercise</button>
+        </div>
+      </div>
+      
+      <div id="end-overlay" class="overlay hidden">
+        <div class="glass-panel main-modal">
+          <h2>Exercise Complete! 🎉</h2>
+          <p>Your eyes thank you.</p>
+          <button id="restart-btn" class="btn secondary">Do It Again</button>
+          <p class="small-hint">Press any key to return to menu</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-top">
+      <div class="glass-panel header-hud">
+        <div class="brand">
+          <h1>iFocus</h1>
+        </div>
+        <div class="hud-controls">
+          <select id="exercise-select" class="input-glass">
+            <option value="infinity">Infinity Loop</option>
+            <option value="circle">Big Circle</option>
+            <option value="z-pattern">Z-Pattern</option>
+            <option value="triangle">Triangle</option>
+            <option value="cross">Cross Pattern</option>
+            <option value="zoom">Near-Far Zoom 🔍</option>
+          </select>
+          <button id="random-session-btn" class="btn secondary icon-only" title="Shuffle Session">🔀</button>
+          <button id="fullscreen-btn" class="btn secondary icon-only" title="Toggle Fullscreen">⛶</button>
+        </div>
+      </div>
+      <p id="instruction-text" class="floating-instruction">Follow the target with your eyes while keeping your head still.</p>
+    </div>
+
+    <div class="hud-bottom">
+      <div class="glass-panel controls-hud">
+        <div class="hud-group">
+          <div class="session-info hidden" id="session-info">Progress: <span id="progress-text">1/5</span></div>
+          <div class="time-display"><span id="timer">60</span>s left</div>
+        </div>
+        
+        <button id="stop-btn" class="btn danger hidden">Stop Exercise</button>
+        
+        <div class="hud-group speed-group">
+          <div class="speed-controls">
+            <button class="speed-btn btn-mini" data-speed="1.5">Slow</button>
+            <button class="speed-btn btn-mini active" data-speed="1">Normal</button>
+            <button class="speed-btn btn-mini" data-speed="0.6">Fast</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="legal-hud">
+        <p class="disclaimer">Wellness tool only. Not medical advice. <a href="https://www.aao.org/eye-health/tips-prevention/farsightedness-eye-exercises" target="_blank" rel="noopener">Learn more</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
