@@ -4,7 +4,10 @@ import { Exercise } from '../exercise';
 
 jest.mock('node-notifier', () => {
   return {
-    notify: jest.fn()
+    __esModule: true,
+    default: {
+      notify: jest.fn()
+    }
   };
 });
 
@@ -28,7 +31,9 @@ describe('Notifier Wrapper', () => {
         subtitle: exercise.title,
         message: exercise.description,
         sound: true,
-      })
+        wait: true,
+      }),
+      expect.any(Function)
     );
   });
 });

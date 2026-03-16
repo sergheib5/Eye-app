@@ -9,10 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const timerDisplay = document.getElementById('timer');
   const speedBtns = document.querySelectorAll('.speed-btn');
   const exerciseSelect = document.getElementById('exercise-select');
-  const fullscreenBtn = document.getElementById('fullscreen-btn');
   const container = document.querySelector('.app-viewport');
   const sessionInfo = document.getElementById('session-info');
   const progressText = document.getElementById('progress-text');
+  const hudBottom = document.querySelector('.hud-bottom');
 
   const SINGLE_EXERCISE_DURATION = 60; 
   const RANDOM_EXERCISE_DURATION = 20; 
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isSessionMode = false;
   let sessionQueue = [];
   let sessionIndex = 0;
+  let inactivityTimeout = null;
 
   // Load Config from server
   fetch('/config')
@@ -55,6 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateTargetVisuals(pattern, themeIndex) {
     target.classList.remove('animating', ...patterns, ...themes);
+    
+    // Force DOM reflow to restart CSS animations reliably
+    void target.offsetWidth;
+
     const themeClass = themes[themeIndex % themes.length];
     target.classList.add('animating', pattern, themeClass);
     
@@ -73,17 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const speedMultiplier = parseFloat(e.target.dataset.speed);
       setSpeed(speedMultiplier);
     });
-  });
-
-  // Handle Fullscreen
-  fullscreenBtn.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      container.requestFullscreen().catch(err => {
-        alert(`Error escaping to full-screen: ${err.message}`);
-      });
-    } else {
-      document.exitFullscreen();
-    }
   });
 
   // Audio Chime Logic
@@ -114,18 +108,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle Keyboard Shortcuts
   window.addEventListener('keydown', (e) => {
+    wakeHUD();
     if (e.code === 'Space') {
       e.preventDefault();
       if (isRunning) {
         stopExercise();
       } else if (!startOverlay.classList.contains('hidden') || !endOverlay.classList.contains('hidden')) {
-        startExercise();
+        startExerciseOrSession();
       }
     }
-    if (e.code === 'Escape' && document.fullscreenElement) {
-      document.exitFullscreen();
-    }
   });
+
+  // Handle Mouse Idle / HUD Hiding
+  function wakeHUD() {
+    hudBottom.classList.remove('hud-hidden');
+    clearTimeout(inactivityTimeout);
+    
+    if (isRunning) {
+      inactivityTimeout = setTimeout(() => {
+        if (isRunning) {
+          hudBottom.classList.add('hud-hidden');
+        }
+      }, 2500);
+    }
+  }
+
+  window.addEventListener('mousemove', wakeHUD);
+  window.addEventListener('touchstart', wakeHUD);
 
   function startExercise(pattern = null, duration = SINGLE_EXERCISE_DURATION) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -139,11 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     endOverlay.classList.add('hidden');
     stopBtn.classList.remove('hidden');
     container.classList.add('is-running');
-    
-    // Auto-fullscreen on start
-    if (!document.fullscreenElement) {
-      container.requestFullscreen().catch(err => console.log("Fullscreen blocked"));
-    }
+    wakeHUD(); // Trigger initial timeout countdown
     
     const selectedPattern = pattern || exerciseSelect.value;
     const themeIdx = pattern ? patterns.indexOf(pattern) : patterns.indexOf(selectedPattern);
@@ -166,14 +171,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
   }
 
-  function startRandomSession() {
+  function shuffleSession() {
     isSessionMode = true;
     sessionQueue = [...patterns].sort(() => Math.random() - 0.5);
     sessionIndex = 0;
     
     sessionInfo.classList.remove('hidden');
     updateProgress();
-    startExercise(sessionQueue[sessionIndex], RANDOM_EXERCISE_DURATION);
+    
+    // Update the dropdown visually to the first random exercise
+    if (sessionQueue.length > 0) {
+      exerciseSelect.value = sessionQueue[sessionIndex];
+    }
+  }
+
+  function startExerciseOrSession() {
+    if (isSessionMode) {
+      startExercise(sessionQueue[sessionIndex], RANDOM_EXERCISE_DURATION);
+    } else {
+      startExercise();
+    }
   }
 
   function nextInSession() {
@@ -199,10 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionInfo.classList.add('hidden');
     stopBtn.classList.add('hidden');
     container.classList.remove('is-running');
-    
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    }
+    hudBottom.classList.remove('hud-hidden');
+    clearTimeout(inactivityTimeout);
   }
 
   function stopExercise() {
@@ -215,25 +230,24 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionInfo.classList.add('hidden');
     stopBtn.classList.add('hidden');
     container.classList.remove('is-running');
-
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    }
+    hudBottom.classList.remove('hud-hidden');
+    clearTimeout(inactivityTimeout);
   }
 
   startBtn.addEventListener('click', () => {
-    isSessionMode = false;
-    sessionInfo.classList.add('hidden');
-    startExercise();
+    startExerciseOrSession();
   });
 
   stopBtn.addEventListener('click', stopExercise);
 
-  randomSessionBtn.addEventListener('click', startRandomSession);
+  randomSessionBtn.addEventListener('click', () => {
+    shuffleSession();
+  });
   
   restartBtn.addEventListener('click', () => {
     if (sessionQueue.length > 0) {
-      startRandomSession();
+      shuffleSession();
+      startExerciseOrSession();
     } else {
       isSessionMode = false;
       startExercise();

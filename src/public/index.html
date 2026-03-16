@@ -3,12 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eye Exercise</title>
+  <title>iFocus</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="app-viewport">
+    
+    <!-- Ambient Background Layer -->
+    <div class="ambient-background"></div>
+
     <!-- The Exercise Area (Background) -->
     <div class="canvas-wrapper">
       <div id="exercise-target"></div>
@@ -16,57 +22,73 @@
       <!-- Interaction Overlays -->
       <div id="start-overlay" class="overlay">
         <div class="glass-panel main-modal">
-          <h2>Ready to focus?</h2>
-          <p>Follow the moving dot for 60 seconds to relieve eye strain.</p>
-          <button id="start-btn" class="btn primary">Start Exercise</button>
+          <div class="panel-inner">
+            <div class="icon-pulse">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+            </div>
+            <h2>iFocus</h2>
+            <p>Follow the moving dot for 60 seconds to relieve eye strain.</p>
+            <button id="start-btn" class="btn primary">Start Exercise</button>
+          </div>
         </div>
       </div>
       
       <div id="end-overlay" class="overlay hidden">
         <div class="glass-panel main-modal">
-          <h2>Exercise Complete! 🎉</h2>
-          <p>Your eyes thank you.</p>
-          <button id="restart-btn" class="btn secondary">Do It Again</button>
-          <p class="small-hint">Press any key to return to menu</p>
+          <div class="panel-inner">
+            <div class="icon-success">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <h2>Exercise Complete!</h2>
+            <p>Your eyes thank you.</p>
+            <button id="restart-btn" class="btn secondary">Do It Again</button>
+            <p class="small-hint">Press spacebar to return to menu</p>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Top HUD -->
     <div class="hud-top">
       <div class="glass-panel header-hud">
         <div class="brand">
           <h1>iFocus</h1>
         </div>
         <div class="hud-controls">
-          <select id="exercise-select" class="input-glass">
-            <option value="infinity">Infinity Loop</option>
-            <option value="circle">Big Circle</option>
-            <option value="z-pattern">Z-Pattern</option>
-            <option value="triangle">Triangle</option>
-            <option value="cross">Cross Pattern</option>
-            <option value="zoom">Near-Far Zoom 🔍</option>
-          </select>
-          <button id="random-session-btn" class="btn secondary icon-only" title="Shuffle Session">🔀</button>
-          <button id="fullscreen-btn" class="btn secondary icon-only" title="Toggle Fullscreen">⛶</button>
+          <div class="select-wrapper">
+            <select id="exercise-select" class="input-glass">
+              <option value="infinity">Infinity Loop</option>
+              <option value="circle">Big Circle</option>
+              <option value="z-pattern">Z-Pattern</option>
+              <option value="triangle">Triangle</option>
+              <option value="cross">Cross Pattern</option>
+              <option value="zoom">Near-Far Zoom</option>
+            </select>
+            <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <button id="random-session-btn" class="btn secondary icon-only" title="Shuffle Session">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+          </button>
         </div>
       </div>
       <p id="instruction-text" class="floating-instruction">Follow the target with your eyes while keeping your head still.</p>
     </div>
 
+    <!-- Bottom HUD -->
     <div class="hud-bottom">
-      <div class="glass-panel controls-hud">
+      <div class="glass-panel controls-hud pill-dock">
         <div class="hud-group">
-          <div class="session-info hidden" id="session-info">Progress: <span id="progress-text">1/5</span></div>
-          <div class="time-display"><span id="timer">60</span>s left</div>
+          <div class="session-info hidden" id="session-info">Session <span id="progress-text" class="highlight">1/5</span></div>
+          <div class="time-display"><span id="timer">60</span><span class="unit">s</span> <span class="dimmed">left</span></div>
         </div>
         
-        <button id="stop-btn" class="btn danger hidden">Stop Exercise</button>
+        <button id="stop-btn" class="btn danger hidden"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>Stop</button>
         
         <div class="hud-group speed-group">
           <div class="speed-controls">
-            <button class="speed-btn btn-mini" data-speed="1.5">Slow</button>
-            <button class="speed-btn btn-mini active" data-speed="1">Normal</button>
-            <button class="speed-btn btn-mini" data-speed="0.6">Fast</button>
+            <button class="speed-btn btn-segment" data-speed="1.5">Slow</button>
+            <button class="speed-btn btn-segment active" data-speed="1">Normal</button>
+            <button class="speed-btn btn-segment" data-speed="0.6">Fast</button>
           </div>
         </div>
       </div>
