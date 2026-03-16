@@ -519,3 +519,79 @@ body {
 @keyframes zoom { 0% { left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.6); opacity: 0.7; filter: blur(3px); } 50% { left: 50%; top: 50%; transform: translate(-50%, -50%) scale(5); opacity: 1; filter: blur(0px); } 100% { left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.6); opacity: 0.7; filter: blur(3px); } }
 
 .hidden { display: none !important; }
+
+/* Responsive Mobile Layout */
+@media (max-width: 600px) {
+  :root {
+    --ui-height: 40px;
+  }
+
+  .header-hud {
+    padding: 6px 12px;
+    gap: 12px;
+  }
+
+  .brand h1 {
+    font-size: 1rem;
+  }
+
+  .input-glass {
+    font-size: 0.85rem;
+    padding: 0 30px 0 12px;
+  }
+
+  .select-wrapper .dropdown-icon {
+    right: 8px;
+  }
+
+  .hud-bottom {
+    bottom: max(24px, env(safe-area-inset-bottom));
+    gap: 16px;
+  }
+
+  .pill-dock {
+    padding: 6px 8px;
+    gap: 12px;
+  }
+
+  .hud-group {
+    gap: 12px;
+    padding: 0 8px;
+  }
+
+  #timer {
+    font-size: 1.15rem;
+    width: 28px;
+  }
+
+  .session-info {
+    font-size: 0.8rem;
+  }
+
+  .time-display .unit {
+    font-size: 0.8rem;
+    margin-right: 4px;
+  }
+
+  .time-display .dimmed {
+    font-size: 0.8rem;
+  }
+
+  .speed-btn.btn-segment {
+    height: 26px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+  }
+
+  .btn.danger {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 0.8rem;
+    margin: 0 4px;
+  }
+
+  .legal-hud {
+    font-size: 0.7rem;
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
