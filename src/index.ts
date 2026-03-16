@@ -2,7 +2,6 @@
 import { Command } from 'commander';
 import { startTimer, stopTimer } from './timer';
 import { getRandomExercise } from './exercise';
-import { sendExerciseNotification } from './notifier';
 import { launchUI } from './server';
 import fs from 'fs';
 import os from 'os';
@@ -43,11 +42,8 @@ program
 
     startTimer(intervalMinutes, () => {
       const exercise = getRandomExercise();
-      console.log(`[${new Date().toLocaleTimeString()}] Time for a break! Exercise: ${exercise.title}`);
-      sendExerciseNotification(exercise, () => {
-        console.log('Notification clicked! Launching UI...');
-        launchUI();
-      });
+      console.log(`[${new Date().toLocaleTimeString()}] Time for a break! Launching UI for: ${exercise.title}`);
+      launchUI();
     });
   });
 
