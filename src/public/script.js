@@ -182,18 +182,28 @@ document.addEventListener('DOMContentLoaded', () => {
     
     sessionInfo.classList.remove('hidden');
     updateProgress();
+  }
+
+  function startSequentialSession() {
+    isSessionMode = true;
+    sessionQueue = [...patterns];
+    sessionIndex = 0;
     
-    // Update the dropdown visually to the first random exercise
-    if (sessionQueue.length > 0) {
-      exerciseSelect.value = sessionQueue[sessionIndex];
-    }
+    sessionInfo.classList.remove('hidden');
+    updateProgress();
   }
 
   function startExerciseOrSession() {
     if (isSessionMode) {
       startExercise(sessionQueue[sessionIndex], RANDOM_EXERCISE_DURATION);
     } else {
-      startExercise();
+      const selected = exerciseSelect.value;
+      if (selected === 'all') {
+        startSequentialSession();
+        startExercise(sessionQueue[sessionIndex], RANDOM_EXERCISE_DURATION);
+      } else {
+        startExercise(selected, SINGLE_EXERCISE_DURATION);
+      }
     }
   }
 
@@ -255,11 +265,17 @@ document.addEventListener('DOMContentLoaded', () => {
   
   restartBtn.addEventListener('click', () => {
     if (sessionQueue.length > 0) {
-      shuffleSession();
+      // Re-run the exact same type of session
+      if (exerciseSelect.value === 'all' && !isSessionMode && sessionQueue.length === patterns.length) {
+          startSequentialSession();
+      } else {
+          // If we had a custom shuffled queue, shuffle again
+          shuffleSession();
+      }
       startExerciseOrSession();
     } else {
       isSessionMode = false;
-      startExercise();
+      startExercise(exerciseSelect.value === 'all' ? null : exerciseSelect.value);
     }
   });
 });
