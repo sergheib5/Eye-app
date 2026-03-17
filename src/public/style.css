@@ -511,7 +511,7 @@ body {
 .animating.cross { animation-name: cross; }
 .animating.zoom { animation-name: zoom; }
 
-@keyframes infinity { 0% { left: 50%; top: 50%; } 25% { left: 90%; top: 10%; } 50% { left: 50%; top: 50%; } 75% { left: 10%; top: 90%; } 100% { left: 50%; top: 50%; } }
+@keyframes infinity { 0% { left: 50%; top: 50%; } 12.5% { left: 85%; top: 15%; } 25% { left: 90%; top: 50%; } 37.5% { left: 85%; top: 85%; } 50% { left: 50%; top: 50%; } 62.5% { left: 15%; top: 15%; } 75% { left: 10%; top: 50%; } 87.5% { left: 15%; top: 85%; } 100% { left: 50%; top: 50%; } }
 @keyframes circle { 0% { left: 50%; top: 10%; } 25% { left: 90%; top: 50%; } 50% { left: 50%; top: 90%; } 75% { left: 10%; top: 50%; } 100% { left: 50%; top: 10%; } }
 @keyframes z-pattern { 0% { left: 10%; top: 10%; } 33% { left: 90%; top: 10%; } 66% { left: 10%; top: 90%; } 100% { left: 90%; top: 90%; } }
 @keyframes triangle { 0% { left: 50%; top: 10%; } 33% { left: 90%; top: 90%; } 66% { left: 10%; top: 90%; } 100% { left: 50%; top: 10%; } }
