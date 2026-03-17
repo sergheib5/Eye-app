@@ -362,6 +362,10 @@ body {
   border-radius: var(--radius-md);
 }
 
+.btn.icon-only svg {
+  pointer-events: none;
+}
+
 .btn.icon-only.is-muted .icon-unmuted {
   display: none;
 }
