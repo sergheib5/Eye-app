@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const startBtn = document.getElementById('start-btn');
   const restartBtn = document.getElementById('restart-btn');
   const stopBtn = document.getElementById('stop-btn');
+  const muteBtn = document.getElementById('mute-btn');
   const randomSessionBtn = document.getElementById('random-session-btn');
   const startOverlay = document.getElementById('start-overlay');
   const endOverlay = document.getElementById('end-overlay');
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let sessionQueue = [];
   let sessionIndex = 0;
   let inactivityTimeout = null;
+  let isMuted = false;
 
   // Load Config from server
   fetch('/config')
@@ -83,6 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Audio Chime Logic
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   function playChime(type) {
+    if (isMuted) return;
+
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     
@@ -239,6 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   stopBtn.addEventListener('click', stopExercise);
+
+  muteBtn.addEventListener('click', () => {
+    isMuted = !isMuted;
+    muteBtn.classList.toggle('is-muted');
+  });
 
   randomSessionBtn.addEventListener('click', () => {
     shuffleSession();

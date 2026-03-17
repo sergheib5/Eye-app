@@ -362,6 +362,14 @@ body {
   border-radius: var(--radius-md);
 }
 
+.btn.icon-only.is-muted .icon-unmuted {
+  display: none;
+}
+
+.btn.icon-only.is-muted .icon-muted {
+  display: block !important;
+}
+
 /* Custom Select Dropdown */
 .select-wrapper {
   position: relative;
