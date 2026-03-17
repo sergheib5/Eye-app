@@ -362,7 +362,7 @@ body {
   border-radius: var(--radius-md);
 }
 
-.btn.icon-only svg {
+.btn.icon-only * {
   pointer-events: none;
 }
 
